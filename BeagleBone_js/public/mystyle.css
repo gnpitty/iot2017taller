@@ -1,0 +1,24 @@
+body {
+    background-color: lightblue;
+ font-size: 2.0em;
+}
+
+h1 {
+    color: navy;
+    margin-left: 20px;
+}
+
+
+
+#search {
+     height: 100px;
+     width: 400px;
+}
+
+input[type=submit] {
+  border: none; /*rewriting standard style, it is necessary to be able to change the size*/
+  height: 400px;
+  width: 400px;
+ font-size: 5.5em;
+}
+
