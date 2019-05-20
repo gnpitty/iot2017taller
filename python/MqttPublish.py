@@ -5,32 +5,30 @@ from random import randint
 import time
 import sys
 
+# Ejemplo de programa que publica en Topic del Broker MQTT
+# Utiliza la biblioteca PAHO de eclipse para conexiones MQTT
+#Parametros Genelares y del Broker MQTT
 
-fecha=  datetime.datetime.now()
-print("FECHAx:",fecha)
-
-# This is the Publisher
-
-host = "192.168.1.128"
-host = "gncon2017a"
+# IP o nombre del broker
 host = "localhost"
 
-topic ="mqtt/queue/100"
-
+topic_leds       = "iot2017/led/#"
 topic_ledon   = "iot2017/led/1"
 topic_ledoff  = "iot2017/led/2"
 topic_temphum = "iot2017/temphum"
-topic_servo   = "iot2017/servo"
-topic_resp =    "iot2017/respuesta";
 
+# conexion al Broker
 def on_connect(client, userdata, flags, rc):
   print("Connected with result code "+str(rc))
-  client.subscribe(topic_resp)
+  client.subscribe(topic_leds)
 
+# Recepcion de Mensajes (Este ejemplo no hace nada, solo imrime el mensaje)
 def on_message(client, userdata, msg):
   #if msg.payload.decode() == "Hello world!":
   fecha=  datetime.datetime.now()
   print(str(fecha)+"   Topic:"+msg.topic+"   Mensaje:"+msg.payload.decode())
+
+
 
 temp=22+randint(0,20)
 
@@ -43,14 +41,16 @@ except IOError as e:
 except:
     print ("Unexpected error:", sys.exc_info()[0])
     raise
-mensaje = topic +" >> Python 3 MAC  Hello world! Esta es una prueba 2222  "+str(fecha)
 
+### inicio del Programa
+fecha=  datetime.datetime.now()
+print("FECHAx:",fecha)
+num_envios = 5
+pausa = .3
 
-
-
-
-conta = 1
-while (conta <  10 ):
+mensaje = topic_temphum +" >> Python MAC  Hello world! Esta es una prueba "+str(fecha)
+conta = 0
+while (conta <  num_envios ):
   var2 =  {'temperatura': temp, 'id': "ABC123",'estacion':'macosx','motor': str(randint(1,4))}
   j2 = str(json.dumps( var2))
   j2 = "0,DUMMSTATION,20, "+str(conta)
@@ -58,11 +58,9 @@ while (conta <  10 ):
   print ("Topic:["+topic+"]  Envia:["+j2+"]")
   client.publish(topic, j2);
   conta= conta +1
-# client.publish(topic_servo, j2);
-  time.sleep(.5)
-  if conta % 16 ==0 :
-    time.sleep(1)
+  client.publish(topic_temphum, mensaje)
+  time.sleep(pausa)
 
-#client.publish(topic_servo, j2);
 client.publish(topic_ledoff, j2);
+print ("Topic:["+topic_temphum+"]  Envia:["+mensaje+"]")
 client.disconnect();
